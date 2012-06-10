@@ -2,6 +2,8 @@ package co.davidwelch.training.spring.mvc_el;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,4 +29,30 @@ public class HomeController {
 		return "home";
 	}
 
+
+	
+	/**
+	 * Displays the login page
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(Model model) {
+		logger.info("Displaying Login page!");
+		return "login";
+	}
+	
+	/**
+	 * Displays the (secured) user page
+	 */
+	@RequestMapping(value = "/secure/users", method = RequestMethod.GET)
+	public String users(Model model) {
+		logger.info("Displaying Users page!");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		// auth should never be null, but check just in case
+		String message = String.format("Welcome %s! This is the secure section", auth == null ? "null" : auth.getName());
+		model.addAttribute("controllerMessage", message );
+		return "users";
+	}
+
+	
 }
